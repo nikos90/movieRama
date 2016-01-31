@@ -1,0 +1,79 @@
+{% extends 'AppBundle::layout/layout.html.twig' %}
+
+{% block content %}
+    {% block fos_user_content %}
+
+        {% if form_errors(form.plainPassword.first) | length > 0 or form_errors(form.plainPassword.second) | length > 0 or  form_errors(form.username) | length > 0 or form_errors(form.email) | length > 0 %}
+            <div class="row" style="margin-top: 30px;">
+                <div class="col-md-6 col-md-offset-3">
+                    {% if form_errors(form.plainPassword.first) %}
+                        <div class="alert alert-danger">{{ form_errors(form.plainPassword.first) }}</div>
+                    {% endif %}
+                    {% if form_errors(form.plainPassword.second) %}
+                        <div class="alert alert-danger">{{ form_errors(form.plainPassword.first) }}</div>
+                    {% endif %}
+                    {% if form_errors(form.email) %}
+                        <div class="alert alert-danger">{{ form_errors(form.email) }}</div>
+                    {% endif %}
+                    {% if form_errors(form.username) %}
+                        <div class="alert alert-danger">{{ form_errors(form.username) }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sign Up</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% trans_default_domain 'FOSUserBundle' %}
+                        <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" id="registerForm">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control required" placeholder="Username" id="fos_user_registration_form_username" name="fos_user_registration_form[username]" required="required" maxlength="255" pattern=".{2,}">
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control required" placeholder="Email" type="email" id="fos_user_registration_form_email" name="fos_user_registration_form[email]" required="required">
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control required"  placeholder="Password" type="password" id="fos_user_registration_form_plainPassword_first" name="fos_user_registration_form[plainPassword][first]" required="required">
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control required"  placeholder="Confirm Password" type="password" id="fos_user_registration_form_plainPassword_second" name="fos_user_registration_form[plainPassword][second]" required="required" >
+                            </div>
+
+                            {{ form_widget(form._token) }}
+                            <input type="submit" id="_submit" name="_submit" value="Sign Up"  class="btn btn-lg btn-success btn-block"/>
+
+                        </fieldset>
+
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock fos_user_content %}
+{% endblock content %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#registerForm').validate(
+                    {
+                        rules: {
+                            fos_user_registration_form_plainPassword_first: "required",
+                            fos_user_registration_form_plainPassword_second: {
+                                equalTo: "#fos_user_registration_form_plainPassword_first"
+                            }
+                        }
+                    }
+            );
+        })
+    </script>
+{% endblock scripts %}

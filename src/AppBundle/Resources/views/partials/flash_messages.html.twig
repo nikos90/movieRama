@@ -1,0 +1,47 @@
+{% set success_messages = app.session.flashbag.get('success') %}
+{% set error_messages = app.session.flashbag.get('error') %}
+{% if  success_messages|length > 0 %}
+    <div class="row" >
+        <div class="col-md-12">
+            <div class="alert alert-success">
+                {% for flash_message in success_messages %}
+                    {{ flash_message }} <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if  error_messages|length > 0 %}
+    <div class="row" >
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                {% for flash_message in error_messages %}
+                    {{ flash_message }} <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="row" ng-show="delete_movie.flash != null">
+    <div class="col-md-12">
+        <div class="alert alert-info" ng-show="delete_movie.flash == 1">
+           Your movie was deleted.
+        </div>
+        <div class="alert alert-warning" ng-show="delete_movie.flash == -1">
+            Your movie was not deleted. Try again.
+        </div>
+    </div>
+</div>
+
+
+<div class="row" ng-show="edit_movie.flash != null">
+    <div class="col-md-12">
+        <div class="alert alert-info" ng-show="edit_movie.flash == 1">
+            Your movie was updated.
+        </div>
+        <div class="alert alert-warning" ng-show="edit_movie.flash == -1">
+            Your movie was not updated. Try again.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+homepage:
+    path:      /
+    defaults:  { _controller: AppBundle:Main:index }
+movie_create:
+    path: /user/movie_create
+    defaults:  { _controller: AppBundle:Movies:create }
+    methods:  [POST]
+movie_list:
+    path: /movies/{limit}/{offset}/{sort}/{direction}/{author}
+    defaults:  { _controller: AppBundle:Movies:movieList ,sort:'created',direction:'desc',author:null}
+movie_like:
+    path: /user/like/{id}
+    defaults:  { _controller: AppBundle:Movies:like }
+    methods:  [POST]
+movie_hate:
+    path: /user/hate/{id}
+    defaults:  { _controller: AppBundle:Movies:hate }
+    methods:  [POST]
+movie_unlike:
+    path: /user/unlike/{id}
+    defaults:  { _controller: AppBundle:Movies:unlike }
+    methods:  [POST]
+movie_unhate:
+    path: /user/unhate/{id}
+    defaults:  { _controller: AppBundle:Movies:unhate }
+    methods:  [POST]
+movie_delete:
+    path: /user/delete/{id}
+    defaults:  { _controller: AppBundle:Movies:delete }
+    methods:  [POST]
+movie_edit:
+    path: /user/edit/movie
+    defaults:  { _controller: AppBundle:Movies:editMovie }
+    methods:  [POST]

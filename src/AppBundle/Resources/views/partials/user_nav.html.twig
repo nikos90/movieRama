@@ -1,0 +1,16 @@
+{% if is_granted('ROLE_USER') %}
+    Welcome back <b>{{ app.user.username }}</b>,&nbsp; <a href="{{ url('fos_user_security_logout') }}">Log out</a>
+
+{% else %}
+
+    <a href="{{ url('fos_user_security_login') }}">
+        Log in
+    </a>
+
+    or
+
+    <a href="{{ url('fos_user_registration_register') }}" class="btn btn-primary">
+        Signup
+    </a>
+
+{% endif %}

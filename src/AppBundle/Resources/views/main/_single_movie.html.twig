@@ -1,0 +1,42 @@
+<li class="left clearfix" ng-repeat="movie in movies" ng-show="movie.id && movie.id>0">
+    <div class="chat-body clearfix">
+        <div class="header">
+            <strong class="primary-font">[[movie.title]]</strong>
+            <small class="pull-right text-muted">
+                <a href="javascript:void(0);" ng-show="movie.is_mine == 'yes'" data-toggle="modal" data-target="#editMovie" ng-click="editClick($index)" > Edit </a>
+                <a href="javascript:void(0);" ng-show="movie.is_mine == 'yes'" data-toggle="modal" data-target="#deleteMovie" ng-click="deleteClick($index)" > Delete </a>
+                <i class="fa fa-clock-o fa-fw"></i> [[ ago(movie.created) ]]
+            </small>
+        </div>
+        <div class="after-header">
+            Posted by <a href="javascript:void(0);" ng-click="setAuthor(movie.author_id,movie.author)">[[movie.author]]</a>
+        </div>
+        <p>
+            [[movie.description]]
+        </p>
+        <div class="chat-footer">
+
+            <div ng-show="movie.likes == 0 && movie.hates == 0 && movie.is_mine == 'no' && movie.me>0" >
+                Be the first to vote for this movie <a href="javascript:void(0);" ng-click="likeMovie($index)">Like</a> | <a href="javascript:void(0);" ng-click="hateMovie($index)">Hate</a>
+            </div>
+            <div ng-show="movie.is_mine == 'yes' || movie.me==0" >
+                <i class="fa fa-thumbs-up"></i> [[movie.likes]] Likes | <i class="fa fa-thumbs-down"></i> [[movie.hates]] Hates
+            </div>
+
+            <div ng-show="movie.is_mine == 'no' && movie.hasLiked>=0 && movie.hasHated>=0 && (movie.likes != 0 || movie.hates != 0) " >
+
+                <span ng-show="movie.hasLiked == 1"> <i class="fa fa-thumbs-up"></i> [[movie.likes]] Likes </span>
+                <a ng-show="movie.hasLiked == 0" ng-click="likeMovie($index)" href="javascript:void(0);"> <i class="fa fa-thumbs-up"></i> [[movie.likes]] Likes </a>
+                |
+                <span ng-show="movie.hasHated == 1"> <i class="fa fa-thumbs-down"></i> [[movie.hates]] Hates </span>
+                <a ng-show="movie.hasHated == 0" ng-click="hateMovie($index)" href="javascript:void(0);"> <i class="fa fa-thumbs-down"></i> [[movie.hates]] Hates </a>
+
+                <!---- Unlike & Unhate -->
+                <span ng-show="movie.hasLiked==1" class="pull-right">You like this movie | <a href="javascript:void(0);" ng-click="unlikeMovie($index)">Unlike</a></span>
+                <span ng-show="movie.hasHated==1" class="pull-right">You hate this movie | <a href="javascript:void(0);" ng-click="unhateMovie($index)">Unhate</a></span>
+            </div>
+
+
+        </div>
+    </div>
+</li>

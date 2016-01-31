@@ -1,0 +1,11 @@
+AppBundle\Entity\Users:
+    type:  entity
+    table: users
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY

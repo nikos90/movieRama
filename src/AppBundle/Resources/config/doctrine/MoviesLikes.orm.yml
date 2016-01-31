@@ -1,0 +1,43 @@
+AppBundle\Entity\MoviesLikes:
+    type: entity
+    table: movies_likes
+    indexes:
+        user_id:
+            columns:
+                - user_id
+        movie_id:
+            columns:
+                - movie_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        created:
+            type: datetime
+            nullable: true
+            default: CURRENT_TIMESTAMP
+    manyToOne:
+        user:
+            targetEntity: Users
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                user_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        movie:
+            targetEntity: Movies
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                movie_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

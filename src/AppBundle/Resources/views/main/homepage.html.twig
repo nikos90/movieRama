@@ -1,0 +1,154 @@
+{% extends 'AppBundle::layout/layout.html.twig' %}
+{% block content %}
+    <div class="row" ng-app="mainApp" ng-controller="MainController">
+        <div class="col-lg-12">
+        <!-- /.panel -->
+        <div class="panel panel-default no-borders">
+            <div class="panel-heading" style="border-left: 1px solid #ddd;border-right: 1px solid #ddd;">
+                Sort by:
+                <a href="javascript:void(0);" ng-click="setSort('likes')" ng-class="{'active-filter':sort=='likes'}">Likes</a> |
+                <a href="javascript:void(0);" ng-click="setSort('hates')" ng-class="{'active-filter':sort=='hates'}">Hates</a> |
+                <a href="javascript:void(0);" ng-click="setSort('created')" ng-class="{'active-filter':sort=='created'}">Date</a>
+
+                &nbsp;
+
+                Direction:
+                <a href="javascript:void(0);" ng-click="setDirection('desc')" ng-class="{'active-filter':direction=='desc'}">Desc</a> |
+                <a href="javascript:void(0);" ng-click="setDirection('asc')" ng-class="{'active-filter':direction=='asc'}">Asc</a>
+
+                <span ng-show="author!=null">
+                    &nbsp; Author:
+                    <a href="javascript:void(0);" class="active-filter" ng-click="unsetAuthor()">
+                        [[author_name]] | <i class="fa fa-times"></i>
+                    </a>
+                </span>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body"  infinite-scroll="fetch()" infinite-scroll-distance='1'>
+                <div class="row">
+                    <div class="col-md-8">
+                        {% include('AppBundle:partials:flash_messages.html.twig') %}
+                        <ul class="chat" ng-show="movies.length > 0">
+                            {% include('AppBundle:main:_single_movie.html.twig') %}
+                        </ul>
+                        <div ng-show="movies.length == 0 && loading == 0" style="padding: 10px;">
+                            No Movies found yet..
+                        </div>
+                        <div ng-show="loading == 1" style="padding: 10px;">
+                            <i class="fa fa-spinner fa-spin"></i> &nbsp; loading..
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        {% if is_granted('ROLE_USER') %}
+                            <button type="button" class="btn btn-outline btn-success btn-lg btn-block" data-target="#newMovie" data-toggle="modal">New movie</button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="newMovie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">New Movie</h4>
+                                        </div>
+                                        <form name="newMovieForm" id="newMovieForm" method="post" action="{{ url('movie_create') }}">
+
+                                        <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>Title</label>
+                                                    <input class="form-control required"  name="title" required="required" placeholder="Title">
+                                                    <p class="help-block">Insert the movie title.</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Description</label>
+                                                    <textarea class="form-control required" rows="3" required="required" name="description"></textarea>
+                                                    <p class="help-block">Insert the movie description.</p>
+                                                </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="editMovie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">Edit Movie</h4>
+                                        </div>
+                                        <form name="editMovieForm" id="newMovieForm">
+
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>Title</label>
+                                                    <input class="form-control required"  name="title" required="required" placeholder="Title" ng-model="edit_movie.title">
+                                                    <p class="help-block">Insert the movie title.</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Description</label>
+                                                    <textarea class="form-control required" rows="3" required="required" name="description" ng-model="edit_movie.description"></textarea>
+                                                    <p class="help-block">Insert the movie description.</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                <button  data-dismiss="modal" class="btn btn-primary" ng-click="saveMovie()" ng-show="edit_movie.title != null && edit_movie.description != null">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+
+                        <div class="modal fade" id="deleteMovie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body-full">
+                                        <div class="alert alert-danger fade in" style="margin-bottom:0px;">
+                                            <strong>Delete Movie</strong><br><br>
+                                            Your are going to delete your movie: <strong>[[delete_movie.name]]</strong>
+                                            <br>
+                                            Are you sure?
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-danger" ng-click="performDelete()" data-dismiss="modal">Delete</button>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+
+    </div>
+    <!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            {% if is_granted('ROLE_USER') %}
+                $('#newMovieForm').validate();
+            {% endif %}
+        });
+    </script>
+    <script type="text/javascript" src="{{ asset('bundles/app/js/homepage.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/app/dist/js/ngInfiniteScroll/build/ng-infinite-scroll.min.js')}}"></script>
+{% endblock %}
