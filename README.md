@@ -30,7 +30,7 @@ Update database credentials on app/config/parameters.yml file to match your mysq
 ```
 Run the schema update
 ```sh
-app/console doctrine:schema:update --force
+php app/console doctrine:schema:update --force
 ```
 
 Publish the assets
@@ -41,8 +41,8 @@ php app/console assets:install --symlink
 Clear the cache
 
 ```sh
-app/console cache:clear --env=prod
-app/console cache:clear --env=dev
+php app/console cache:clear --env=prod
+php app/console cache:clear --env=dev
 ```
 
 
